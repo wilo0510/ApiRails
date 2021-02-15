@@ -12,4 +12,12 @@ FactoryBot.define do
      }
     user
   end
+  #Variación de post , estos seran siempre publicados
+  factory :published_post,class: 'Post' do
+    title { Faker::Lorem.sentence }
+    content { Faker::Lorem.paragraph }
+    published { true }
+    user
+  end
+
 end

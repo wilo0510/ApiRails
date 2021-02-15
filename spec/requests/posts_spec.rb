@@ -1,14 +1,28 @@
 require "rails_helper"
 
 RSpec.describe "Posts", type: :request do
-    describe "GET /post" do
-        before {get '/posts' }
+    describe "GET /post" do        
         it "Should return OK" do
+            get '/posts'
             payload= JSON.parse(response.body)
             expect(payload).to be_empty
             expect(response).to have_http_status(200)
 
-        end        
+        end 
+        describe "Search" do
+            let!(:hola_mundo){create(:published_post,title:'Hola mundo')}
+            let!(:hola_rails){create(:published_post,title:'Hola rails')}
+            let!(:curso_rails){create(:published_post,title:'Curso rails')}
+
+            it "Should filter posts by title" do
+                get "/posts?seach=Hola"
+                payload=JSON.parse(response.body)
+                expect(payload).to_not be_empty
+                expect(payload.size).to eq(2)
+                expect(payload.map {|p| p["id"]}.sort).to eq([hola_mundo.id,hola_rails.id].sort)
+                expect(response).to have_http_status(:ok)
+            end
+        end       
     end
     describe "with data in the DB "do
         # uso de factoru bot para crear la lista 
